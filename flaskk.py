@@ -87,15 +87,11 @@ def get_animal(animal_name):
     else:
         return jsonify({'error': 'Животное не найдено'})
 
-@app.route('/init_db', methods=['POST'])
-def init_db():
+if __name__ == '__main__':
     conn = get_db_connection()
     cursor = conn.cursor()
     create_tables(cursor)
     animaldef(cursor)
     conn.commit()
     conn.close()
-    return jsonify({'message': 'База данных инициализирована'})
-
-if __name__ == '__main__':
     app.run(debug=True, port=5001)
