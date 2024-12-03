@@ -4,7 +4,6 @@ import requests
 import json
 
 def get_animals():
-    """Получение списка животных с сервера."""
     try:
         response = requests.get("http://127.0.0.1:5001/animals")
         response.raise_for_status()
@@ -16,17 +15,16 @@ def get_animals():
         show_error("Ошибка при получении животных")
 
 def show_animal_details():
-    """Отображение деталей выбранного животного."""
     try:
         selected_animal = animal_listbox.get(animal_listbox.curselection())
         response = requests.get(f"http://127.0.0.1:5001/animals/{selected_animal}")
         response.raise_for_status()
         animal_details = json.loads(response.text)
         
-        details_text.delete("1.0", tk.END)  # Очистка текстового поля
+        details_text.delete("1.0", tk.END) 
         
         if isinstance(animal_details, list) and len(animal_details) > 0:
-            # Убедимся, что конечности существуют
+            # если конечности существуют
             unique_appendages = set()
             animal_name = animal_details[0]['animal_name']
             
@@ -52,38 +50,31 @@ def show_animal_details():
         show_error("Пожалуйста, выберите животное.")
 
 def show_error(message):
-    """Отображение сообщения об ошибке."""
     details_text.delete("1.0", tk.END)
     details_text.insert(tk.END, message)
 
-# Создание основного окна
 root = tk.Tk()
 root.title("База данных животных")
 root.style = ttk.Style()
-root.style.theme_use('clam')  # или другой стиль, если доступен
+root.style.theme_use('clam') 
 
 main_frame = ttk.Frame(root, padding="10")
 main_frame.grid(row=0, column=0, sticky=(tk.N, tk.S, tk.E, tk.W))
 
-# Кнопка для получения списка животных
 get_button = ttk.Button(main_frame, text="Получить животных", command=get_animals)
 get_button.grid(row=0, column=0, pady=5)
 
-# Список для отображения животных
 animal_listbox = tk.Listbox(main_frame, width=30)
 animal_listbox.grid(row=1, column=0, pady=5)
 
-# Фрейм для отображения деталей
 details_frame = ttk.LabelFrame(main_frame, text="Детали", padding="10")
 details_frame.grid(row=0, column=1, rowspan=2, padx=10, sticky=(tk.N, tk.S, tk.E, tk.W))
 
-# Текстовое поле для отображения деталей животного
 details_text = tk.Text(details_frame, wrap=tk.WORD, height=10, width=40)
 details_text.pack()
 
-# Кнопка для показа деталей выбранного животного
+# показ деталей выбранного животного
 show_details_button = ttk.Button(main_frame, text="Показать детали", command=show_animal_details)
 show_details_button.grid(row=2, column=0, pady=5)
 
-# Запуск основного цикла приложения
 root.mainloop()
